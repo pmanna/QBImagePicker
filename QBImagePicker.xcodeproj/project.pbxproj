@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		D85B8705207629BF0029038B /* QBImagePickerFramework */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = D85B8708207629BF0029038B /* Build configuration list for PBXAggregateTarget "QBImagePickerFramework" */;
+			buildPhases = (
+				D85B8709207629EA0029038B /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = QBImagePickerFramework;
+			productName = QBImagePickerFramework;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		790A850F1AE7D4D9008E2A80 /* QBSlomoIconView.h in Headers */ = {isa = PBXBuildFile; fileRef = 790A850D1AE7D4D9008E2A80 /* QBSlomoIconView.h */; };
 		790A85101AE7D4D9008E2A80 /* QBSlomoIconView.m in Sources */ = {isa = PBXBuildFile; fileRef = 790A850E1AE7D4D9008E2A80 /* QBSlomoIconView.m */; };
@@ -427,6 +441,10 @@
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = AAA8FE261ACDA0CE002A9710;
 					};
+					D85B8705207629BF0029038B = {
+						CreatedOnToolsVersion = 9.3;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = AAA8FDFD1ACDA079002A9710 /* Build configuration list for PBXProject "QBImagePicker" */;
@@ -451,6 +469,7 @@
 				AAA8FE0D1ACDA079002A9710 /* QBImagePickerTests */,
 				AAA8FE261ACDA0CE002A9710 /* QBImagePickerDemo */,
 				AAA8FE3E1ACDA0CE002A9710 /* QBImagePickerDemoTests */,
+				D85B8705207629BF0029038B /* QBImagePickerFramework */,
 			);
 		};
 /* End PBXProject section */
@@ -490,6 +509,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D85B8709207629EA0029038B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\n\nUNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\nFMWK_NAME=QBImagePicker\n\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n\n# Step 1. Build Device and Simulator versions\nxcodebuild -project ${FMWK_NAME}.xcodeproj -target \"${FMWK_NAME}\" ONLY_ACTIVE_ARCH=NO -arch arm64 -configuration ${CONFIGURATION} BITCODE_GENERATION_MODE=bitcode -sdk iphoneos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\nxcodebuild -project ${FMWK_NAME}.xcodeproj -target \"${FMWK_NAME}\" ONLY_ACTIVE_ARCH=NO -arch x86_64 -configuration ${CONFIGURATION} BITCODE_GENERATION_MODE=bitcode -sdk iphonesimulator BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\n\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n\n# Step 3. Copy Swift modules from iphonesimulator build (if it exists) to the copied framework directory\nSIMULATOR_SWIFT_MODULES_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule/.\"\nif [ -d \"${SIMULATOR_SWIFT_MODULES_DIR}\" ]; then\ncp -R \"${SIMULATOR_SWIFT_MODULES_DIR}\" \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule\"\nfi\n\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n\n# Step 5. Convenience step to copy the framework to the project's directory\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework\" \"${PROJECT_DIR}\"\n\n# Step 6. Convenience step to open the project's directory in Finder\nopen \"${PROJECT_DIR}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AAA8FDFE1ACDA079002A9710 /* Sources */ = {
@@ -790,6 +825,22 @@
 			};
 			name = Release;
 		};
+		D85B8706207629BF0029038B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D85B8707207629BF0029038B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -834,6 +885,15 @@
 			buildConfigurations = (
 				AAA8FE4B1ACDA0CE002A9710 /* Debug */,
 				AAA8FE4C1ACDA0CE002A9710 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D85B8708207629BF0029038B /* Build configuration list for PBXAggregateTarget "QBImagePickerFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D85B8706207629BF0029038B /* Debug */,
+				D85B8707207629BF0029038B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -43,6 +43,7 @@ typedef NS_ENUM(NSUInteger, QBImagePickerMediaType) {
 @property (nonatomic, assign) NSUInteger maximumNumberOfSelection;
 
 @property (nonatomic, copy) NSString *prompt;
+@property (nonatomic, copy) NSString *sortOrder;
 @property (nonatomic, assign) BOOL showsNumberOfSelectedAssets;
 
 @property (nonatomic, assign) NSUInteger numberOfColumnsInPortrait;
